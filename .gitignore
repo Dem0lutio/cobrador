@@ -30,6 +30,8 @@ frontend/.angular/local/
 # Environment files
 .env
 .env.*
+frontend/.env
+backend/.env
 # Coverage
 coverage/
 frontend/coverage/
