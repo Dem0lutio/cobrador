@@ -44,3 +44,5 @@ backend/coverage/
 backend/.nestjs/
 # Others
 frontend/public/
+# Prisma
+backend/generated/prisma
