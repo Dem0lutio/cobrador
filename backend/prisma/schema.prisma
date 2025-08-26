@@ -13,3 +13,28 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id             Int      @id @default(autoincrement())
+  username       String
+  email          String   @unique
+  password       String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  dividasDevedor Divida[] @relation("DividasDevedor")
+  dividasCredor  Divida[] @relation("DividasCredor")
+}
+
+model Divida {
+  id             Int      @id @default(autoincrement())
+  valor          Float
+  dataVencimento DateTime
+  descricao      String
+  status         String
+  devedorId      Int
+  credorId       Int
+  devedor        User     @relation("DividasDevedor", fields: [devedorId], references: [id])
+  credor         User     @relation("DividasCredor", fields: [credorId], references: [id])
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
