@@ -1,3 +1,4 @@
+import { UsersService } from "./users.service";
 import {
   Controller,
   Get,
@@ -9,15 +10,21 @@ import {
 } from "@nestjs/common";
 import { CreateUserDto } from "./dtos/create-user.dto";
 
-@Controller("auth")
+@Controller("users")
 export class UsersController {
+  constructor(private readonly userservice: UsersService) {}
   // Controller methods will go here
 
-  @Get("whoami")
+  @Get("profile")
   getProfile() {}
 
   @Post("signup")
   signup(@Body() createUserDto: CreateUserDto) {
     // Handle user signup
+  }
+
+  @Post("signin")
+  signin() {
+    // Handle user signin
   }
 }
