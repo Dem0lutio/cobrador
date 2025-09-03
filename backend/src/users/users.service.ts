@@ -1,11 +1,11 @@
-import { PrismaClient } from "./../../generated/prisma/client";
+import { PrismaService } from "./../infra/prisma/prisma.service";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly PrismaClient) {}
-  createUser(createUserDto: any) {
+  constructor(private prisma: PrismaService) {}
+  async createUser(createUserDto: any) {
     console.log("createUser called with:", createUserDto);
-    this.PrismaClient.user.create({ data: createUserDto });
+    await this.prisma.user.create({ data: createUserDto });
   }
 }
