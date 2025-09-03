@@ -16,11 +16,13 @@ export class UsersController {
   // Controller methods will go here
 
   @Get("profile")
-  getProfile() {}
+  getProfile() {
+    console.log("getProfile called");
+  }
 
   @Post("signup")
   signup(@Body() createUserDto: CreateUserDto) {
-    // Handle user signup
+    this.userservice.createUser(createUserDto);
   }
 
   @Post("signin")
