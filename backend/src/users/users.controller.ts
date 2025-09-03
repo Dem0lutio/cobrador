@@ -21,8 +21,8 @@ export class UsersController {
   }
 
   @Post("signup")
-  signup(@Body() createUserDto: CreateUserDto) {
-    this.userservice.createUser(createUserDto);
+  async signup(@Body() createUserDto: CreateUserDto) {
+    return this.userservice.createUser(createUserDto);
   }
 
   @Post("signin")
