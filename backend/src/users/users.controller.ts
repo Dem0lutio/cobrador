@@ -7,6 +7,7 @@ import {
   Param,
   Request,
   Body,
+  Session,
 } from "@nestjs/common";
 import { CreateUserDto } from "./dtos/create-user.dto";
 
@@ -21,7 +22,7 @@ export class UsersController {
   }
 
   @Post("signup")
-  async signup(@Body() createUserDto: CreateUserDto) {
+  async signup(@Body() createUserDto: CreateUserDto, @Session() session: any) {
     return this.userservice.createUser(createUserDto);
   }
 
