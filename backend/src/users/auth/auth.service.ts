@@ -1,4 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { UsersService } from "../users.service";
+import { randomBytes, scrypt as _scrypt } from "crypto";
+import { promisify } from "util";
+const scrypt = promisify(_scrypt);
 
 @Injectable()
-export class AuthService {}
+export class AuthService {
+  constructor(private usersService: UsersService) {}
+
+  async signUp(username: string, email: string, password: string) {
+    const users = await this.usersService.findAll(email);
+    if (users.length) {
+      throw new BadRequestException("Email in use");
+    }
+    const salt = randomBytes(16).toString("hex");
+    const hash = (await scrypt(password, salt, 32)) as Buffer;
+    const result = salt + "." + hash.toString("hex");
+    const user = await this.usersService.createUser(username, email, result);
+    return user;
+  }
+}

@@ -10,10 +10,14 @@ import {
   Session,
 } from "@nestjs/common";
 import { CreateUserDto } from "./dtos/create-user.dto";
+import { AuthService } from "./auth/auth.service";
 
 @Controller("users")
 export class UsersController {
-  constructor(private readonly userservice: UsersService) {}
+  constructor(
+    private userservice: UsersService,
+    private authService: AuthService
+  ) {}
   // Controller methods will go here
 
   @Get("profile")
@@ -22,8 +26,8 @@ export class UsersController {
   }
 
   @Post("signup")
-  async signup(@Body() createUserDto: CreateUserDto, @Session() session: any) {
-    return this.userservice.createUser(createUserDto);
+  async signup(@Body() body: CreateUserDto, @Session() session: any) {
+    return this.authService.signUp(body.username, body.email, body.password);
   }
 
   @Post("signin")
