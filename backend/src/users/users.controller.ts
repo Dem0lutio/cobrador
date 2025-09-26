@@ -11,6 +11,7 @@ import {
 } from "@nestjs/common";
 import { CreateUserDto } from "./dtos/create-user.dto";
 import { AuthService } from "./auth/auth.service";
+import { SignInDto } from "./dtos/sign-in.dto";
 
 @Controller("users")
 export class UsersController {
@@ -31,7 +32,7 @@ export class UsersController {
   }
 
   @Post("signin")
-  signin() {
-    // Handle user signin
+  async signin(@Body() body: SignInDto, @Session() session: any) {
+    const user = this.authService.signIn();
   }
 }

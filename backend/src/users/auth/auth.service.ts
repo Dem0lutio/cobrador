@@ -19,4 +19,6 @@ export class AuthService {
     const user = await this.usersService.createUser(username, email, result);
     return user;
   }
+
+  async signIn() {}
 }
