@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { UsersService } from "../users.service";
 import { randomBytes, scrypt as _scrypt } from "crypto";
 import { promisify } from "util";
+import { isEmail } from "class-validator";
 const scrypt = promisify(_scrypt);
 
 @Injectable()
@@ -24,5 +25,18 @@ export class AuthService {
     return user;
   }
 
-  async signIn() {}
+  async signIn(identifier: string, password: string) {
+    const [user] = await (isEmail(identifier)
+      ? this.usersService.findAllByEmail(identifier)
+      : this.usersService.findAllByUsername(identifier));
+    if (!user) {
+      throw new BadRequestException("Usuário não encontrado!");
+    }
+    const [salt, storedHash] = user.password.split(".");
+    const hash = (await scrypt(password, salt, 32)) as Buffer;
+    if (storedHash !== hash.toString("hex")) {
+      throw new BadRequestException("Senha inválida!");
+    }
+    return user;
+  }
 }
