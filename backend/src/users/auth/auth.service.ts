@@ -9,9 +9,13 @@ export class AuthService {
   constructor(private usersService: UsersService) {}
 
   async signUp(username: string, email: string, password: string) {
-    const users = await this.usersService.findAll(email);
+    let users = await this.usersService.findAllByEmail(email);
     if (users.length) {
-      throw new BadRequestException("Email in use");
+      throw new BadRequestException("Email em uso!");
+    }
+    users = await this.usersService.findAllByUsername(username);
+    if (users.length) {
+      throw new BadRequestException("Username em uso!");
     }
     const salt = randomBytes(16).toString("hex");
     const hash = (await scrypt(password, salt, 32)) as Buffer;
