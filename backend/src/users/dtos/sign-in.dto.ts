@@ -1,16 +1,12 @@
 // backend/src/users/dtos/sign-in.dto.ts
-import { IsEmail, IsNotEmpty, IsString, ValidateIf } from "class-validator";
+import { IsNotEmpty, IsString } from "class-validator";
+import { Transform } from "class-transformer";
 
 export class SignInDto {
-  @ValidateIf(({ email }) => !email)
   @IsString()
-  @IsNotEmpty()
-  username?: string;
-
-  @ValidateIf(({ username }) => !username)
-  @IsEmail()
-  @IsNotEmpty()
-  email?: string;
+  @IsNotEmpty({ message: "Informe e-mail ou username" })
+  @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
+  identifier: string;
 
   @IsString()
   @IsNotEmpty()
