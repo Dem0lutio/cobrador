@@ -1,13 +1,21 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { UsersService } from "../users.service";
 import { randomBytes, scrypt as _scrypt } from "crypto";
 import { promisify } from "util";
 import { isEmail } from "class-validator";
+import { JwtService } from "@nestjs/jwt";
 const scrypt = promisify(_scrypt);
 
 @Injectable()
 export class AuthService {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private jwtService: JwtService
+  ) {}
 
   async signUp(username: string, email: string, password: string) {
     let users = await this.usersService.findAllByEmail(email);
@@ -35,8 +43,13 @@ export class AuthService {
     const [salt, storedHash] = user.password.split(".");
     const hash = (await scrypt(password, salt, 32)) as Buffer;
     if (storedHash !== hash.toString("hex")) {
-      throw new BadRequestException("Senha inválida!");
+      throw new UnauthorizedException();
     }
-    return user;
+    const payload = {
+      sub: user.id,
+      username: user.username,
+      email: user.email,
+    };
+    return { access_token: this.jwtService.sign(payload) };
   }
 }
