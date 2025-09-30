@@ -1,8 +1,18 @@
+### Cria um novo usuário
 POST http://localhost:3000/users/signup
 Content-Type: application/json
 
 {
   "username": "testuser",
   "email": "test@email.com",
+  "password": "testpassword"
+}
+
+### Loga como usuário existente
+POST http://localhost:3000/users/signin
+Content-Type: application/json
+
+{
+  "identifier": "testuser",
   "password": "testpassword"
 }
