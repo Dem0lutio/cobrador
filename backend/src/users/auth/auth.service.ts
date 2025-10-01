@@ -30,7 +30,15 @@ export class AuthService {
     const hash = (await scrypt(password, salt, 32)) as Buffer;
     const result = salt + "." + hash.toString("hex");
     const user = await this.usersService.createUser(username, email, result);
-    return user;
+    const payload = {
+      sub: user.id,
+      username: user.username,
+      email: user.email,
+    };
+    return {
+      access_token: this.jwtService.sign(payload),
+      user: { id: user.id, username: user.username, email: user.email },
+    };
   }
 
   async signIn(identifier: string, password: string) {
@@ -50,6 +58,9 @@ export class AuthService {
       username: user.username,
       email: user.email,
     };
-    return { access_token: this.jwtService.sign(payload) };
+    return {
+      access_token: this.jwtService.sign(payload),
+      user: { id: user.id, username: user.username, email: user.email },
+    };
   }
 }
