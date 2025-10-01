@@ -18,12 +18,12 @@ export class AuthService {
   ) {}
 
   async signUp(username: string, email: string, password: string) {
-    let users = await this.usersService.findAllByEmail(email);
-    if (users.length) {
+    let returned_user = await this.usersService.findByEmail(email);
+    if (returned_user) {
       throw new BadRequestException("Email em uso!");
     }
-    users = await this.usersService.findAllByUsername(username);
-    if (users.length) {
+    returned_user = await this.usersService.findByUsername(username);
+    if (returned_user) {
       throw new BadRequestException("Username em uso!");
     }
     const salt = randomBytes(16).toString("hex");
@@ -42,16 +42,16 @@ export class AuthService {
   }
 
   async signIn(identifier: string, password: string) {
-    const [user] = await (isEmail(identifier)
-      ? this.usersService.findAllByEmail(identifier)
-      : this.usersService.findAllByUsername(identifier));
+    const user = await (isEmail(identifier)
+      ? this.usersService.findByEmail(identifier)
+      : this.usersService.findByUsername(identifier));
     if (!user) {
-      throw new BadRequestException("Usuário não encontrado!");
+      throw new UnauthorizedException("Credenciais inválidas");
     }
     const [salt, storedHash] = user.password.split(".");
     const hash = (await scrypt(password, salt, 32)) as Buffer;
     if (storedHash !== hash.toString("hex")) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException("Credenciais inválidas");
     }
     const payload = {
       sub: user.id,

@@ -16,11 +16,11 @@ export class UsersService {
     return this.prisma.user.findUnique({ where: { id } });
   }
 
-  async findAllByEmail(email: string) {
-    return this.prisma.user.findMany({ where: { email } });
+  async findByEmail(email: string) {
+    return this.prisma.user.findUnique({ where: { email } });
   }
 
-  async findAllByUsername(username: string) {
-    return this.prisma.user.findMany({ where: { username } });
+  async findByUsername(username: string) {
+    return this.prisma.user.findUnique({ where: { username } });
   }
 }
