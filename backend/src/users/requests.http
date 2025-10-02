@@ -16,3 +16,7 @@ Content-Type: application/json
   "identifier": "testuser",
   "password": "testpassword"
 }
+
+### Obtém o perfil do usuário autenticado
+GET http://localhost:3000/users/profile
+Authorization: Bearer <token>
