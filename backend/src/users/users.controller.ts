@@ -1,32 +1,37 @@
-import { UsersService } from "./users.service";
 import {
   Controller,
   Get,
   Post,
   Patch,
   Param,
-  Request,
   Body,
+  UseGuards,
 } from "@nestjs/common";
 import { CreateUserDto } from "./dtos/create-user.dto";
+import { AuthService } from "./auth/auth.service";
+import { SignInDto } from "./dtos/sign-in.dto";
+import { JwtAuthGuard } from "./auth/jwt-auth.guard";
+import { CurrentUser } from "./decorators/current-user.decorator";
+import { CurrentUserDto } from "./dtos/current-user.dto";
 
 @Controller("users")
 export class UsersController {
-  constructor(private readonly userservice: UsersService) {}
+  constructor(private authService: AuthService) {}
   // Controller methods will go here
 
   @Get("profile")
-  getProfile() {
-    console.log("getProfile called");
+  @UseGuards(JwtAuthGuard)
+  getProfile(@CurrentUser() user: CurrentUserDto) {
+    return { usuario_logado: user };
   }
 
   @Post("signup")
-  async signup(@Body() createUserDto: CreateUserDto) {
-    return this.userservice.createUser(createUserDto);
+  async signup(@Body() body: CreateUserDto) {
+    return this.authService.signUp(body.username, body.email, body.password);
   }
 
   @Post("signin")
-  signin() {
-    // Handle user signin
+  async signin(@Body() body: SignInDto) {
+    return await this.authService.signIn(body.identifier, body.password);
   }
 }

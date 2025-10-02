@@ -1,3 +1,4 @@
+### Cria um novo usuário
 POST http://localhost:3000/users/signup
 Content-Type: application/json
 
@@ -6,3 +7,16 @@ Content-Type: application/json
   "email": "test@email.com",
   "password": "testpassword"
 }
+
+### Loga como usuário existente
+POST http://localhost:3000/users/signin
+Content-Type: application/json
+
+{
+  "identifier": "testuser",
+  "password": "testpassword"
+}
+
+### Obtém o perfil do usuário autenticado
+GET http://localhost:3000/users/profile
+Authorization: Bearer <token>
